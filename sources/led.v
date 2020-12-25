@@ -20,7 +20,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module digital_tube( output reg [7:0] tube_char, output reg [7:0] tube_switch = 0, input clk, input up, input down, input[5:0] new_text, input wire[2:0] mode, input wire[15:0] number, input wire[11:0]  Time);
+module digital_tube( 
+    output reg [7:0] tube_char, //æ§åˆ¶æ•°ç ç®¡æ ·å¼
+    output reg [7:0] tube_switch = 0,  //æ§åˆ¶å„ä¸ªæ•°ç ç®¡æ˜¾ç¤ºä¸å¦
+    input clk, //æ—¶é’Ÿä¿¡å·
+    input up, // è´§é“ä¸Šç¿»ä¿¡å·
+    input down,  // ä¸‹ç¿»
+    input[5:0] new_text, // ä¸‹ä¸€ä¸ªæ˜¾ç¤ºç‰©å“çš„è´§é“å·  
+    input wire[2:0] mode,  // å½“å‰çš„æ˜¾ç¤ºæ¨¡å¼
+    input wire[15:0] number,  // è¦æ˜¾ç¤ºçš„æ•°å­—
+    input wire[11:0]  Time);  // è¦æ˜¾ç¤ºçš„æ—¶é—´
 
 reg[33:0] counter_scan = 0;
 reg[33:0] counter_roll = 0;
@@ -71,7 +80,7 @@ parameter commodity_11 = 112'b11111001111110011111111111000110100010011000011010
 parameter commodity_12 = 96'b111110011010010011111111100100101100000011000001100011001111111110100100000000001100000011111111;
 
 
-//²»Í¬ÉÌÆ·¹Ì¶¨ÎÄ±¾µÄ³¤¶È
+//ä¸åŒå•†å“å›ºå®šæ–‡æœ¬çš„é•¿åº¦
 parameter length_0 = 8;
 parameter length_1 = 15;
 parameter length_2 = 11;
@@ -93,24 +102,24 @@ reg[250:0] on_showing_text_with_rest;
 integer on_showing_text_length = length_1;
 integer on_showing_text_length_with_rest;
 integer current_commodity_index = 1;
-integer rolling_index = 0; // ¹ö¶¯ÏÔÊ¾µÄindex
+integer rolling_index = 0; // æ»šåŠ¨æ˜¾ç¤ºçš„index
 
 reg[1:0] is_up_or_down = 0;  
 
-// 0 Ä¬ÈÏ×´Ì¬ ÊÕµ½ up »ò down ĞÅºÅÖ®ºó±ã»á = 1
-// 1 ÉÏÉı/ÏÂ½µ Ò»°ëµÄ×´Ì¬ period Ö®ºó»á±äÎª 2
-// 2 ÍêÈ«ÉÏÉı/ÏÂ½µµÄ×´Ì¬ period Ö®ºó»á±äÎª 3
-// 3 ÉÏÉı/ÏÂ½µ Ò»°ëµÄ×´Ì¬ Ö®ºó±äÎª 0
+// 0 é»˜è®¤çŠ¶æ€ æ”¶åˆ° up æˆ– down ä¿¡å·ä¹‹åä¾¿ä¼š = 1
+// 1 ä¸Šå‡/ä¸‹é™ ä¸€åŠçš„çŠ¶æ€ period ä¹‹åä¼šå˜ä¸º 2
+// 2 å®Œå…¨ä¸Šå‡/ä¸‹é™çš„çŠ¶æ€ period ä¹‹åä¼šå˜ä¸º 3
+// 3 ä¸Šå‡/ä¸‹é™ ä¸€åŠçš„çŠ¶æ€ ä¹‹åå˜ä¸º 0
 
 reg[33:0] is_up_or_down_counter = 0;
 parameter is_up_or_down_period = 50000000;
-reg[0:0] current_change_direction = 0; // ±£Áô´«À´µÄup»òdownĞÅºÅ 0 ±íÊ¾ÏòÏÂ£¬1±íÊ¾ÏòÉÏ
+reg[0:0] current_change_direction = 0; // ä¿ç•™ä¼ æ¥çš„upæˆ–downä¿¡å· 0 è¡¨ç¤ºå‘ä¸‹ï¼Œ1è¡¨ç¤ºå‘ä¸Š
 
 reg[0:0] is_changing_text = 0;
 
 always @ (posedge clk) begin
 
-    //É¨Ãè¼ÆÊ±Æ÷ »á¸ü¸Ä counter_scan
+    //æ‰«æè®¡æ—¶å™¨ ä¼šæ›´æ”¹ counter_scan
     if(counter_scan >= scan_period) begin
         cube_onshowing_index = cube_onshowing_index + 1;
         counter_scan = 0;
@@ -118,7 +127,7 @@ always @ (posedge clk) begin
     
     else counter_scan = counter_scan + 1;
 
-    if(counter_roll >= rolling_period && is_up_or_down == 0) begin  // ÉÏÏÂ¹ö¶¯Ê±£¬²»»á×óÓÒ¹ö¶¯£¬²»È»¿´²»Çå
+    if(counter_roll >= rolling_period && is_up_or_down == 0) begin  // ä¸Šä¸‹æ»šåŠ¨æ—¶ï¼Œä¸ä¼šå·¦å³æ»šåŠ¨ï¼Œä¸ç„¶çœ‹ä¸æ¸…
         rolling_index = rolling_index - 1;
         counter_roll = 0;
         if(rolling_index < 0) 
@@ -128,7 +137,7 @@ always @ (posedge clk) begin
     else counter_roll = counter_roll + 1;
     
     if(mode == 1 || mode == 4 || mode == 5) begin
-    // Ä£Ê½1ÊÇÆÕÍ¨µÄÏÔÊ¾ÉÌÆ·£¬Ö»ĞèÒªÓÃµ½ 4 ¸öÊı×Ö µÄ ÖĞ¼äÁ½¸ö
+    // æ¨¡å¼1æ˜¯æ™®é€šçš„æ˜¾ç¤ºå•†å“ï¼Œåªéœ€è¦ç”¨åˆ° 4 ä¸ªæ•°å­— çš„ ä¸­é—´ä¸¤ä¸ª
     case(number_BCD[3:0])
     4'd0 : tmp_text_bits_1 = 7'b1000000;
     4'd1 : tmp_text_bits_1 = 7'b1111001;
@@ -168,19 +177,19 @@ always @ (posedge clk) begin
 
     on_showing_text_length_with_rest = on_showing_text_length + 2;
 
-     //ÏòÉÏ ÇÒ²»ÔÚ¸Ä±äÖĞ
+     //å‘ä¸Š ä¸”ä¸åœ¨æ”¹å˜ä¸­
     if(up == 1 && is_up_or_down == 0) begin
         is_up_or_down = 1;
         current_change_direction = 1;
     end
           
-    //ÏòÏÂ ÇÒ²»ÔÚ¸Ä±äÖĞ
+    //å‘ä¸‹ ä¸”ä¸åœ¨æ”¹å˜ä¸­
     if(down == 1 && is_up_or_down == 0) begin
         is_up_or_down = 1;
         current_change_direction = 0;
     end
     
-    // is_up_or_down = 1 Ê± ÊÇÒ»¸ö±È½ÏÖØÒªµÄ×´Ì¬£¬1ÇĞ»»µ½2Ê±£¬»á¸ü»»µ±Ê±²¥·ÅµÄÎïÆ·!
+    // is_up_or_down = 1 æ—¶ æ˜¯ä¸€ä¸ªæ¯”è¾ƒé‡è¦çš„çŠ¶æ€ï¼Œ1åˆ‡æ¢åˆ°2æ—¶ï¼Œä¼šæ›´æ¢å½“æ—¶æ’­æ”¾çš„ç‰©å“!
     if(is_up_or_down == 1) begin
          if(is_up_or_down_counter >= is_up_or_down_period) begin
              is_up_or_down_counter = 0;
@@ -214,7 +223,7 @@ always @ (posedge clk) begin
 
                rolling_index = on_showing_text_length - 6;   
                
-               on_showing_eight_chars = on_showing_text_with_rest[ rolling_index * 8 + 63 -: 64 ]; // ¹é0
+               on_showing_eight_chars = on_showing_text_with_rest[ rolling_index * 8 + 63 -: 64 ]; // å½’0
               
          end
          else is_up_or_down_counter = is_up_or_down_counter + 1; 
@@ -232,7 +241,7 @@ always @ (posedge clk) begin
          if(is_up_or_down_counter >= is_up_or_down_period) begin
              is_up_or_down_counter = 0;
              is_up_or_down = 0;
-             counter_roll = 0;  // »»ÍêÒ»´Îºó£¬ÏÂ´ÎÎŞ·ìÇĞ»»
+             counter_roll = 0;  // æ¢å®Œä¸€æ¬¡åï¼Œä¸‹æ¬¡æ— ç¼åˆ‡æ¢
          end
          else is_up_or_down_counter = is_up_or_down_counter + 1; 
      end    
@@ -622,12 +631,12 @@ always @ (posedge clk) begin
     
 end
 
-always @ (cube_onshowing_index) begin  // ÏÔÊ¾ on_showing_eight_chars
+always @ (cube_onshowing_index) begin  // æ˜¾ç¤º on_showing_eight_chars
     tube_switch = 8'hff;
     tube_switch[cube_onshowing_index] = 0;
     tube_char = on_showing_eight_chars[cube_onshowing_index * 8 + 7 -: 8];
     
-        // ÏòÏÂ ×´Ì¬1 Õâ¸öÊ±ºòÏÔÈ»»á¸Ä±ä on_showing_eight_bits
+        // å‘ä¸‹ çŠ¶æ€1 è¿™ä¸ªæ—¶å€™æ˜¾ç„¶ä¼šæ”¹å˜ on_showing_eight_bits
     if ((is_up_or_down == 1 && current_change_direction == 0) || (is_up_or_down == 3 && current_change_direction == 1)) begin
         tube_char[6] = tube_char[0];
         tube_char[2] = tube_char[1];
@@ -638,7 +647,7 @@ always @ (cube_onshowing_index) begin  // ÏÔÊ¾ on_showing_eight_chars
         tube_char[5] = 1;       
         tube_char[7] = 1; 
     end
-        // ÏòÉÏ ×´Ì¬1 Õâ¸öÊ±ºòÏÔÈ»»á¸Ä±ä on_showing_eight_bits
+        // å‘ä¸Š çŠ¶æ€1 è¿™ä¸ªæ—¶å€™æ˜¾ç„¶ä¼šæ”¹å˜ on_showing_eight_bits
     if ((is_up_or_down == 1 && current_change_direction == 1) || (is_up_or_down == 3 && current_change_direction == 0) ) begin
          tube_char[0] = tube_char[6];
          tube_char[1] = tube_char[2];
@@ -649,7 +658,7 @@ always @ (cube_onshowing_index) begin  // ÏÔÊ¾ on_showing_eight_chars
          tube_char[3] = 1;   
          tube_char[7] = 1; 
     end
-        //×´Ì¬2 Ê²Ã´¶¼²»ÏÔÊ¾ 
+        //çŠ¶æ€2 ä»€ä¹ˆéƒ½ä¸æ˜¾ç¤º 
     if(is_up_or_down == 2) begin
         tube_char = 8'b11111111;
     end
@@ -680,8 +689,13 @@ end
 end
 endmodule
 */
+
+
+
+//å°†16ä½äºŒè¿›åˆ¶è¾“å…¥è½¬åŒ–æˆ20ä½BCDç¼–ç çš„æ¨¡å—ï¼Œè¾“å…¥16bitï¼Œ è¾“å‡º20bit bcdç¼–ç  ç”¨äºæ•°ç ç®¡æ˜¾ç¤ºå…·ä½“æ•°å­—
 module toBCD_16_20(
-input wire[15:0] BinaryNumber, output reg[19:0] BCD);
+    input wire[15:0] BinaryNumber, 
+    output reg[19:0] BCD);
 
 reg[15:0] number = 0;
 integer i;

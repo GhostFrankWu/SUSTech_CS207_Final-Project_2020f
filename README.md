@@ -1,7 +1,7 @@
 # SUSTech_CS205_Final-Project_2020f   
 Digital logic design FinalProject present by **菜鸡互啄** team  
 2020年秋季学期的数字逻辑项目，完成了全部基本功能和要求的Bouns功能，蜂鸣器可设计任何乐曲播放，完善了滚动显示，增加了“无聊模式”和炫酷的彩灯，以及密码登录功能。  
-## 队员及分工：  
+## 队员及分工(分工明确均匀)：  
 数码管显示及脚本主力：**[@WLS2002](https://github.com/WLS2002)**  
 蜂鸣器及Led彩灯主力 ：**Siyu Liu（刘思语）**  
 主程序逻辑及代码综合：**[@GhostFrankWu](https://github.com/GhostFrankWu)**  

@@ -61,7 +61,7 @@ Digital logic design FinalProject present by **菜鸡互啄** team
 ## 系统执行流程（数据流向、状态转移图、功能伪代码等）  
 ![flowChart](https://github.com/GhostFrankWu/SUSTech_CS207_Final-Project_2020f/blob/main/shot/flow_chart.png)  
 ## 测试结果演示视频  
- 下附答辩视频链接，因为演示了绝大部分基本功能，故不再附上图片。  
+ 下附答辩视频链接，**如播放卡顿烦请下载后观看**演示了绝大部分基本功能，故不再附上图片。  
  [http://106.52.237.196/videos/dd2020.mp4](http://106.52.237.196/videos/dd2020.mp4)  
  PS.视频开头片段为程序的逻辑电路图  
 ## 总结
